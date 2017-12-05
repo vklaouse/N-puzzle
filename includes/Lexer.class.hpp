@@ -4,19 +4,24 @@
 # include <fstream>
 # include <vector>
 # include <cstdlib>
+# include <string>
 
 class Lexer {
 	
 private:
 	bool bError;
-	int **iTaquinBoard;
+	std::vector< std::vector<int *> *> *iTaquinBoard;
 	std::ifstream *CFileStream;
 	std::vector<std::string> vError;
+	int iTaquinSize;
+	int iLineNbr;
 
 	Lexer(void);
+	void lexLine(std::string, int);
+	void saveError(int, int = 0, std::string = "");
 
 public:
-	Lexer(std::string, int **);
+	Lexer(std::string, std::vector< std::vector<int *> *> *);
 	~Lexer(void) { return ; };
 
 };

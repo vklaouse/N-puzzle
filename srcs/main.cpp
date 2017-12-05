@@ -1,10 +1,16 @@
 #include "Lexer.class.hpp"
 
 int main(int ac, char **av) {
-	int **iTaquinBoard = NULL;
+	std::vector< std::vector<int *> *> iTaquinBoard;
 
 	if (ac >= 2) {
-		Lexer(av[1], iTaquinBoard);
+		Lexer(av[1], &iTaquinBoard);
+		for (size_t i = 0; i < iTaquinBoard.size(); i++) {
+			for (size_t j = 0; j < iTaquinBoard[i]->size(); j++) {
+				std::cout << *((int*)iTaquinBoard[i]->at(j)) << " (" << iTaquinBoard.size() << " " << iTaquinBoard[i]->size() << ") " ;
+			}
+			std::cout << std::endl;
+		}
 	}
 	return 0;
 }
