@@ -74,7 +74,10 @@ void Lexer::lexLine(std::string sLine, int iLine) {
 	}
 	if (iLineSize < iTaquinSize && !bTaquinSize)
 		saveError(iLine);
-	iTaquinBoard->push_back(tmpVector);
+	if (!bLineNbr)
+		iTaquinBoard->push_back(tmpVector);
+	else
+		delete tmpVector;
 }
 
 void Lexer::saveError(int iLine, int iType, std::string sError) {
