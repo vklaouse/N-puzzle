@@ -1,7 +1,7 @@
 #include "Lexer.class.hpp"
 
 Lexer::Lexer(std::string sFileName, std::vector< std::vector<int *> *> *TaquinBoard)
-	: bError(false), iTaquinBoard(TaquinBoard), iTaquinSize(0), iLineNbr(0) {
+	: bError(false), vTaquinBoard(TaquinBoard), iTaquinSize(0), iLineNbr(0) {
 	CFileStream = new std::ifstream(sFileName);
 
 	if (CFileStream->fail()) {
@@ -75,7 +75,7 @@ void Lexer::lexLine(std::string sLine, int iLine) {
 	if (iLineSize < iTaquinSize && !bTaquinSize)
 		saveError(iLine);
 	if (!bLineNbr)
-		iTaquinBoard->push_back(tmpVector);
+		vTaquinBoard->push_back(tmpVector);
 	else
 		delete tmpVector;
 }

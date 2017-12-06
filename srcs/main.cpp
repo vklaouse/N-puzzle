@@ -11,12 +11,12 @@ static void printTable(std::vector< std::vector<int *> *> iTaquinBoard) {
 }
 
 int main(int ac, char **av) {
-	std::vector< std::vector<int *> *> iTaquinBoard;
+	std::vector< std::vector<int *> *> vTaquinBoard;
 
 	if (ac >= 2) {
-		Lexer(av[1], &iTaquinBoard);
-		// Parser(&iTaquinBoard);
-		printTable(iTaquinBoard);
+		Lexer(av[1], &vTaquinBoard);
+		Parser((std::vector< std::vector<int *> *> *)&vTaquinBoard);
+		printTable(vTaquinBoard);
 	}
 	return 0;
 }
