@@ -1,6 +1,6 @@
 #include "Lexer.class.hpp"
 
-Lexer::Lexer(std::string sFileName, std::vector< std::vector<int *> *> *TaquinBoard)
+Lexer::Lexer(std::string sFileName, std::vector< std::vector<int> *> *TaquinBoard)
 	: bError(false), vTaquinBoard(TaquinBoard), iTaquinSize(0), iLineNbr(0) {
 	CFileStream = new std::ifstream(sFileName);
 
@@ -29,6 +29,11 @@ Lexer::Lexer(std::string sFileName, std::vector< std::vector<int *> *> *TaquinBo
 	return ;
 }
 
+Lexer::~Lexer()
+{
+	delete CFileStream;
+}
+
 void Lexer::lexLine(std::string sLine, int iLine) {
 	std::string str;
 	size_t j = 0;
@@ -36,7 +41,7 @@ void Lexer::lexLine(std::string sLine, int iLine) {
 	int iLineSize = 0;
 	size_t i = 0;
 	bool bLineNbr = true;
-	std::vector<int *> *tmpVector = new std::vector<int *>;
+	std::vector<int> *tmpVector = new std::vector<int>;
 
 	for (; i < sLine.size(); i++) {
 		if (sLine[i] == '#')
@@ -64,7 +69,7 @@ void Lexer::lexLine(std::string sLine, int iLine) {
 			if (iLineSize > iTaquinSize)
 				saveError(iLine, 1, str);
 			else {
-				tmpVector->push_back(new int(std::stoi(str)));
+				tmpVector->push_back(std::stoi(str));
 			}
 			i--;
 			str.clear();

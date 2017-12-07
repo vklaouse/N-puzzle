@@ -1,10 +1,11 @@
 #include "Parser.class.hpp"
 
-Parser::Parser(std::vector< std::vector<int *> *> *TaquinBoard)
+Parser::Parser(std::vector< std::vector<int> > TaquinBoard)
 	: vTaquinBoard(TaquinBoard) {
-	for (size_t i = 0; i < vTaquinBoard->size(); i++) {
-		for (size_t j = 0; j < vTaquinBoard->at(i)->size(); j++) {
-			if (!checkDoublon(*(vTaquinBoard->at(i)->at(j)), i, j + 1)) {
+	for (size_t i = 0; i < vTaquinBoard.size(); i++) {
+		for (size_t j = 0; j < vTaquinBoard[i].size(); j++) {
+			std::cout << vTaquinBoard[i][j] << " ";
+			if (!checkDoublon(vTaquinBoard[i][j], i, j + 1)) {
 				std::cerr << "Invalid puzzle : wrong content" << std::endl;
 				exit(0);
 			}
@@ -17,10 +18,10 @@ Parser::Parser(std::vector< std::vector<int *> *> *TaquinBoard)
 }
 
 bool Parser::checkDoublon(int iToCheck, size_t i, size_t j) {
-	for (; i < vTaquinBoard->size(); i++) {
-		for (; j < vTaquinBoard->at(i)->size(); j++) {
-			if (iToCheck == *(vTaquinBoard->at(i)->at(j)) 
-				|| static_cast<size_t>(iToCheck) >= vTaquinBoard->size() * vTaquinBoard->size())
+	for (; i < vTaquinBoard.size(); i++) {
+		for (; j < vTaquinBoard[i].size(); j++) {
+			if (iToCheck == vTaquinBoard[i][j]
+				|| static_cast<size_t>(iToCheck) >= vTaquinBoard.size() * vTaquinBoard.size())
 				return false;
 		}
 		j = 0;
@@ -66,16 +67,16 @@ std::vector<int> *Parser::saveSnailArray() {
 	size_t m;
 	std::vector<int> *tmpVector = new std::vector<int>;
 
-	for (size_t i = 0; i < vTaquinBoard->size(); i++) {
+	for (size_t i = 0; i < vTaquinBoard.size(); i++) {
 		j = i;
-		for (; j < vTaquinBoard->at(i)->size() - i; j++)
-			tmpVector->push_back(*(vTaquinBoard->at(i)->at(j)));
-		for (k = i + 1; k < vTaquinBoard->size() - i; k++)
-			tmpVector->push_back(*(vTaquinBoard->at(k)->at(j - 1)));
+		for (; j < vTaquinBoard[i].size() - i; j++)
+			tmpVector->push_back(vTaquinBoard[i][j]);
+		for (k = i + 1; k < vTaquinBoard.size() - i; k++)
+			tmpVector->push_back(vTaquinBoard[k][j - 1]);
 		for (l = j - 1; l > i; l--)
-			tmpVector->push_back(*(vTaquinBoard->at(k - 1)->at(l - 1)));
+			tmpVector->push_back(vTaquinBoard[k - 1][l - 1]);
 		for (m = k - 1; m > i + 1; m--)
-			tmpVector->push_back(*(vTaquinBoard->at(m - 1)->at(l)));
+			tmpVector->push_back(vTaquinBoard[m - 1][l]);
 	}
 	return tmpVector;
 }

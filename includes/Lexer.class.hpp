@@ -10,7 +10,7 @@ class Lexer {
 	
 private:
 	bool bError;
-	std::vector< std::vector<int *> *> *vTaquinBoard;
+	std::vector< std::vector<int> *> *vTaquinBoard;
 	std::ifstream *CFileStream;
 	std::vector<std::string> vError;
 	int iTaquinSize;
@@ -21,7 +21,7 @@ private:
 	void saveError(int, int = 0, std::string = "");
 
 public:
-	Lexer(std::string, std::vector< std::vector<int *> *> *);
-	~Lexer(void) { return ; };
+	Lexer(std::string, std::vector< std::vector<int> *> *);
+	~Lexer(void);
 
 };
