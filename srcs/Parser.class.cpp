@@ -4,7 +4,6 @@ Parser::Parser(std::vector< std::vector<int> > TaquinBoard)
 	: vTaquinBoard(TaquinBoard) {
 	for (size_t i = 0; i < vTaquinBoard.size(); i++) {
 		for (size_t j = 0; j < vTaquinBoard[i].size(); j++) {
-			std::cout << vTaquinBoard[i][j] << " ";
 			if (!checkDoublon(vTaquinBoard[i][j], i, j + 1)) {
 				std::cerr << "Invalid puzzle : wrong content" << std::endl;
 				exit(0);
@@ -30,53 +29,78 @@ bool Parser::checkDoublon(int iToCheck, size_t i, size_t j) {
 }
 
 bool Parser::isSolvable() {
-	std::vector<int> *tmpVector = saveSnailArray();
-	for (size_t j = 0; j < tmpVector->size(); j++)
-		std::cout << tmpVector->at(j) << " ";
-	//gros caca
-	// bool bFisrtIter = true;
-	// int cnt = 0;
+	int iPuzzleInversion = inversion(vTaquinBoard.size(), vTaquinBoard);
+	int iGoalInversion = inversion(vTaquinBoard.size());
 
-	// for (int i = static_cast<int>(tmpVector->size() - 1); i >= 0; i--) {
-	// 	for (size_t j = 0; j < tmpVector->size(); j++)
-	// 		std::cout << tmpVector->at(j) << " ";
-	// 	std::cout << std::endl  << *(max_element(tmpVector->begin(), tmpVector->begin() + i)) << std::endl;
-	// 	if (bFisrtIter) {
-	// 		bFisrtIter = false;
-	// 		if (0 != tmpVector->back()) {
-	// 			std::iter_swap(min_element(tmpVector->begin(), tmpVector->begin() + i), tmpVector->begin() + i);
-	// 			cnt++;
-	// 		}
-	// 	}
-	// 	else {
-	// 		if (i != tmpVector->back()) {
-	// 			std::iter_swap(max_element(tmpVector->begin(), tmpVector->begin() + i), tmpVector->begin() + i);
-	// 			cnt++;
-	// 		}
-	// 	}
-	// 	tmpVector->pop_back();
-	// }
-	// std::cout << cnt << std::endl;
-	return true;
+	return (iPuzzleInversion % 2 != iGoalInversion % 2 ? false : true);
 }
 
-std::vector<int> *Parser::saveSnailArray() {
+int Parser::inversion(size_t puzzleSize, std::vector< std::vector<int> > vPuzzle) {
+	int iNbrInversion = 0;
+	int cnt = 1;
+	std::vector<int> vOneDimenssionPuzzle;
+	std::vector<int> vBasicPuzzle;
+
+	if (vPuzzle.empty())
+		vPuzzle = buildGoal(puzzleSize);
+	for (size_t i = 0; i < puzzleSize; i++) {
+		for (size_t j = 0; j < puzzleSize; j++) {
+			vOneDimenssionPuzzle.push_back(vPuzzle[i][j]);
+			cnt = (cnt == static_cast<int>(puzzleSize * puzzleSize) ? 0 : cnt);
+			vBasicPuzzle.push_back(cnt++);
+		}
+	}
+	for (size_t i = vOneDimenssionPuzzle.size() - 1; i > 0; i--) {
+		if (vOneDimenssionPuzzle[0] == 0) {
+			vOneDimenssionPuzzle.erase(vOneDimenssionPuzzle.begin());
+			vBasicPuzzle.pop_back();
+		}
+		else if (vOneDimenssionPuzzle[0] > vBasicPuzzle[0]) {
+			size_t j = 0;
+			for (; j < i; j++) {
+				if (vOneDimenssionPuzzle[0] == vBasicPuzzle[j])
+					break ;
+				iNbrInversion++;
+			}
+			vOneDimenssionPuzzle.erase(vOneDimenssionPuzzle.begin());
+			vBasicPuzzle.erase(vBasicPuzzle.begin() + j);
+		}
+		else {
+			vOneDimenssionPuzzle.erase(vOneDimenssionPuzzle.begin());
+			vBasicPuzzle.erase(vBasicPuzzle.begin());
+		}
+	}
+	return iNbrInversion;
+}
+
+
+
+std::vector<std::vector<int> > Parser::buildGoal(size_t puzzleSize) {
 	size_t j;
 	size_t k;
 	size_t l;
 	size_t m;
-	std::vector<int> *tmpVector = new std::vector<int>;
+	size_t cnt = 1;
+	std::vector< std::vector<int> > tmpVector(puzzleSize, std::vector<int>(puzzleSize));
 
-	for (size_t i = 0; i < vTaquinBoard.size(); i++) {
+	for (size_t i = 0; i < puzzleSize; i++) {
 		j = i;
-		for (; j < vTaquinBoard[i].size() - i; j++)
-			tmpVector->push_back(vTaquinBoard[i][j]);
-		for (k = i + 1; k < vTaquinBoard.size() - i; k++)
-			tmpVector->push_back(vTaquinBoard[k][j - 1]);
-		for (l = j - 1; l > i; l--)
-			tmpVector->push_back(vTaquinBoard[k - 1][l - 1]);
-		for (m = k - 1; m > i + 1; m--)
-			tmpVector->push_back(vTaquinBoard[m - 1][l]);
+		for (; j < puzzleSize - i; j++) {
+			tmpVector[i][j] = cnt++;
+			cnt = (cnt == puzzleSize * puzzleSize ? 0 : cnt);
+		}
+		for (k = i + 1; k < puzzleSize - i; k++) {
+			tmpVector[k][j - 1] = cnt++;
+			cnt = (cnt == puzzleSize * puzzleSize ? 0 : cnt);
+		}
+		for (l = j - 1; l > i; l--) {
+			tmpVector[k - 1][l - 1] = cnt++;
+			cnt = (cnt == puzzleSize * puzzleSize ? 0 : cnt);
+		}
+		for (m = k - 1; m > i + 1; m--) {
+			tmpVector[m - 1][l] = cnt++;
+			cnt = (cnt == puzzleSize * puzzleSize ? 0 : cnt);
+		}
 	}
 	return tmpVector;
 }
