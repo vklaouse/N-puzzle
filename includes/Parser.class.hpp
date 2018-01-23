@@ -17,6 +17,7 @@ private:
 	int inversion(size_t, std::vector< std::vector<int> > = std::vector< std::vector<int> >());
 
 public:
+
 	Parser(std::vector< std::vector<int> >);
 	~Parser(void) { return ; };
 

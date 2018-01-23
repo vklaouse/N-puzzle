@@ -1,12 +1,12 @@
 // ************************************************************************** //
 //                                                                            //
 //                                                        :::      ::::::::   //
-//   AStar.class.hpp                                    :+:      :+:    :+:   //
+//   PriorityQueue.template.hpp                         :+:      :+:    :+:   //
 //                                                    +:+ +:+         +:+     //
 //   By: semartin <marvin@42.fr>                    +#+  +:+       +#+        //
 //                                                +#+#+#+#+#+   +#+           //
-//   Created: 2017/12/08 17:09:52 by semartin          #+#    #+#             //
-//   Updated: 2017/12/08 17:09:52 by semartin         ###   ########.fr       //
+//   Created: 2018/01/23 13:30:58 by semartin          #+#    #+#             //
+//   Updated: 2018/01/23 13:30:59 by semartin         ###   ########.fr       //
 //                                                                            //
 // ************************************************************************** //
 
@@ -14,33 +14,36 @@
 
 #include <iostream>
 #include <vector>
-#include <queue>
-#include <ctgmath>
 #include "Puzzle.class.hpp"
-#include "PriorityQueue.class.hpp"
 
-class AStar
+class PriorityQueue
 {
 
 private:
-	Puzzle * start;
-	Puzzle * goal;
+    int iSize;
+    int iNbStates;
 
-	PriorityQueue closedSet;
-	PriorityQueue openSet;
+    class Queue
+    {
+    public:
 
-	int iSizePuzzle;
-	int iNpuzzle;
+        int iPriority;
+        std::vector<Puzzle *> content;
+        Queue * next;
+    };
 
-	void Compute();
-	int fillValidNeighbor(Puzzle * current, std::vector<Puzzle *> & neighbor);
+    Queue ** beginQueue;
 
-	int ManhattanHeuristic(Puzzle * current, Puzzle * goal);
-
-	AStar();
-	
 public:
-	AStar(std::vector<int> & Start, std::vector<int> & Goal);
-	~AStar() {};
+
+    PriorityQueue();
+    ~PriorityQueue();
+
+    bool empty();
+    size_t size() { return iSize; };
+    void push(Puzzle * elt);
+	Puzzle * back() { return (*beginQueue)->content.back(); };
+	void pop();
+    Puzzle * bIsInQueue(Puzzle * elt); //POP THE ELT OUT
 
 };
