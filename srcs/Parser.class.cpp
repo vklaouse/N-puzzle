@@ -31,7 +31,6 @@ bool Parser::checkDoublon(int iToCheck, size_t i, size_t j) {
 bool Parser::isSolvable() {
 	int iPuzzleInversion = inversion(vTaquinBoard.size(), vTaquinBoard);
 	int iGoalInversion = inversion(vTaquinBoard.size());
-
 	return (iPuzzleInversion % 2 != iGoalInversion % 2 ? false : true);
 }
 
@@ -43,8 +42,13 @@ int Parser::inversion(size_t puzzleSize, std::vector< std::vector<int> > vPuzzle
 
 	if (vPuzzle.empty())
 		vPuzzle = buildGoal(puzzleSize);
+	size_t y = 0;
 	for (size_t i = 0; i < puzzleSize; i++) {
 		for (size_t j = 0; j < puzzleSize; j++) {
+			if (vPuzzle[i][j] == 0)
+			{
+				y = j;
+			}
 			vOneDimenssionPuzzle.push_back(vPuzzle[i][j]);
 			cnt = (cnt == static_cast<int>(puzzleSize * puzzleSize) ? 0 : cnt);
 			vBasicPuzzle.push_back(cnt++);
@@ -70,7 +74,16 @@ int Parser::inversion(size_t puzzleSize, std::vector< std::vector<int> > vPuzzle
 			vBasicPuzzle.erase(vBasicPuzzle.begin());
 		}
 	}
-	return iNbrInversion;
+	size_t h = puzzleSize - 1 - y;
+	if (puzzleSize % 2 == 0)
+	{
+		if (h % 2 == iNbrInversion % 2)
+			return 0;
+		else
+			return 1;
+	}
+	else
+		return iNbrInversion;
 }
 
 

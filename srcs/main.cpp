@@ -1,14 +1,15 @@
 #include "Lexer.class.hpp"
 #include "Parser.class.hpp"
 #include "AStar.class.hpp"
-// static void printTable(std::vector< std::vector<int> *> iTaquinBoard) {
-// 	for (size_t i = 0; i < iTaquinBoard.size(); i++) {
-// 		for (size_t j = 0; j < iTaquinBoard[i]->size(); j++) {
-// 			std::cout << iTaquinBoard[i]->at(j) << "  ";
-// 		}
-// 		std::cout << std::endl;
+// static void printTable(std::vector<int> iTaquinBoard) {
+// 	for (size_t i = 0; i < iTaquinBoard.size(); i++) 
+// 	{
+// 		std::cout << iTaquinBoard[i] << "  ";
 // 	}
+// 	std::cout << std::endl;
+	
 // }
+
 
 static std::vector<std::vector<int> > MainBuildGoal(size_t puzzleSize) 
 {
@@ -49,7 +50,7 @@ int main(int ac, char **av) {
 		
 		std::vector<int> goal;
 		std::vector<int> vABoard;
-		std::vector< std::vector<int> > tmpGoal = MainBuildGoal(3);
+		std::vector< std::vector<int> > tmpGoal = MainBuildGoal(4);
 		std::vector< std::vector<int> > vBoard(vTaquinBoard.size(), std::vector<int>(vTaquinBoard[0]->size(), 0));
 		for (size_t i = 0; i < vBoard.size(); i++)
 		{

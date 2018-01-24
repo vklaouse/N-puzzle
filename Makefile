@@ -1,6 +1,8 @@
 NAME = npuzzle
 
-SRC = main.cpp Lexer.class.cpp Parser.class.cpp
+SRC = main.cpp Lexer.class.cpp Parser.class.cpp \
+		AStar.class.cpp PriorityQueue.class.cpp \
+		Puzzle.class.cpp
 
 OBJ = $(addprefix $(O_DIR)/,$(SRC:.cpp=.o))
 

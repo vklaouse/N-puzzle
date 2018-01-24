@@ -44,6 +44,7 @@ public:
     void push(Puzzle * elt);
 	Puzzle * back() { return (*beginQueue)->content.back(); };
 	void pop();
-    Puzzle * bIsInQueue(Puzzle * elt); //POP THE ELT OUT
+    bool bIsInQueue(Puzzle * elt); //POP THE ELT OUT
+    Puzzle * PopOutOfQueue(Puzzle * elt); //POP THE ELT OUT
 
 };

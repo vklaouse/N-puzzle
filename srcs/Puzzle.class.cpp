@@ -45,7 +45,10 @@ void Puzzle::setNewPuzzle(Puzzle * rhs, int iIndex)
 		else if (iIndex == TURN_LEFT)
 		{
 			if (i == rhs->iGetEmptyPos() + 1)
+			{
 				vecPuzzle[i] = 0;
+				iEmptyPos = i;
+			}
 			else if (i == rhs->iGetEmptyPos())
 				vecPuzzle[i] = rhs->vecGetPuzzle()[i + 1];
 			else
@@ -54,7 +57,10 @@ void Puzzle::setNewPuzzle(Puzzle * rhs, int iIndex)
 		else if (iIndex == TURN_RIGHT)
 		{
 			if (i == rhs->iGetEmptyPos() - 1)
+			{
 				vecPuzzle[i] = 0;
+				iEmptyPos = i;
+			}
 			else if (i == rhs->iGetEmptyPos())
 				vecPuzzle[i] = rhs->vecGetPuzzle()[i - 1];
 			else
@@ -63,7 +69,10 @@ void Puzzle::setNewPuzzle(Puzzle * rhs, int iIndex)
 		else if (iIndex == TURN_BOT)
 		{
 			if (i == rhs->iGetEmptyPos() - sqrt(vecPuzzle.size()))
+			{
 				vecPuzzle[i] = 0;
+				iEmptyPos = i;
+			}
 			else if (i == rhs->iGetEmptyPos())
 				vecPuzzle[i] = rhs->vecGetPuzzle()[i - sqrt(vecPuzzle.size())];
 			else
@@ -72,7 +81,10 @@ void Puzzle::setNewPuzzle(Puzzle * rhs, int iIndex)
 		else if (iIndex == TURN_TOP)
 		{
 			if (i == rhs->iGetEmptyPos() + sqrt(vecPuzzle.size()))
+			{
 				vecPuzzle[i] = 0;
+				iEmptyPos = i;
+			}
 			else if (i == rhs->iGetEmptyPos())
 				vecPuzzle[i] = rhs->vecGetPuzzle()[i + sqrt(vecPuzzle.size())];
 			else
@@ -92,7 +104,9 @@ bool Puzzle::operator==(Puzzle & rhs) // TODO
 	for (size_t i = 0; i < vecPuzzle.size(); i++)
 	{
 		if (vecPuzzle[i] != rhs.vecGetPuzzle()[i])
+		{
 			return false;
+		}
 	}
 	return true;
 }

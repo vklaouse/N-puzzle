@@ -12,6 +12,15 @@
 
 #include "AStar.class.hpp"
 
+// static void printTable(std::vector<int> iTaquinBoard) {
+// 	for (size_t i = 0; i < iTaquinBoard.size(); i++) 
+// 	{
+// 		std::cout << iTaquinBoard[i] << "  ";
+// 	}
+// 	std::cout << std::endl;
+	
+// }
+
 AStar::AStar(std::vector<int> & vecStart, std::vector<int> & vecGoal)
 {
 	start = new Puzzle(vecStart);
@@ -19,12 +28,12 @@ AStar::AStar(std::vector<int> & vecStart, std::vector<int> & vecGoal)
 	iSizePuzzle = vecStart.size();
 	iNpuzzle = sqrt(iSizePuzzle);
 	Compute();
-
+	/*
 	if (iNpuzzle * iNpuzzle != iSizePuzzle)
 	{
 		std::cerr << "Error : Wrong Puzzle size" << std::endl;
 		exit(0);
-	}
+	}*/
 }
 
 void AStar::Compute()
@@ -33,9 +42,8 @@ void AStar::Compute()
 
 	openSet.push(start);
 
-//	int ig_Score = 0;
-//	int ih_Score = ManhattanHeuristic(start, goal);
-//	int if_Score = ih_Score;
+	start->SetgScore(0);
+	start->SetPriority(ManhattanHeuristic(start, goal));
 	int iAttemptScore;
 
 	std::vector<Puzzle *> neighbor;
@@ -43,6 +51,8 @@ void AStar::Compute()
 	while (openSet.size() > 0)
 	{
 		Puzzle * current = openSet.back();
+//		std::cout << "Priority = " << current->iGetPriority()  << " et empty pos = " << current->iGetEmptyPos() << std::endl;
+//		printTable(current->vecGetPuzzle());
 		if (*current == *goal)
 		{
 			return; // WIN
@@ -52,31 +62,28 @@ void AStar::Compute()
 
 		int iNumNeighbor = fillValidNeighbor(current, neighbor);
 		Puzzle * EltInOpenset;
-
 		for (int i = 0; i < iNumNeighbor; i++)
 		{
-			if (openSet.size() % 1000 == 0)
-				std::cout<< openSet.size() << std::endl;
+			iAttemptScore = current->iGetgScore() + 1;
+			neighbor[i]->SetgScore(iAttemptScore);
+			neighbor[i]->SetPriority(iAttemptScore + ManhattanHeuristic(neighbor[i], goal));
 			if (closedSet.bIsInQueue(neighbor[i]))
 			{
 				delete neighbor[i];
 				continue;
 			}
-			iAttemptScore = current->iGetgScore() + 1;
-			if (!(EltInOpenset = openSet.bIsInQueue(neighbor[i])))
+			if (!(EltInOpenset = openSet.PopOutOfQueue(neighbor[i])))
 			{
-				neighbor[i]->SetgScore(iAttemptScore);
-				neighbor[i]->SetPriority(iAttemptScore + ManhattanHeuristic(neighbor[i], goal));
 				openSet.push(neighbor[i]);
 				neighbor[i]->SetCameFrom(current);
+//				printTable(neighbor[i]->vecGetPuzzle());
+//				std::cout << "Priority = " << neighbor[i]->iGetPriority()  << " et empty pos = " << neighbor[i]->iGetEmptyPos() << std::endl;
 			}
 			else
 			{
 				if (neighbor[i]->iGetgScore() > iAttemptScore)
 				{
-					neighbor[i]->SetCameFrom(current);
-					neighbor[i]->SetgScore(iAttemptScore);
-					neighbor[i]->SetPriority(iAttemptScore + ManhattanHeuristic(neighbor[i], goal));
+					neighbor[i]->SetCameFrom(current);;
 					openSet.push(neighbor[i]);
 					delete EltInOpenset;
 				}
@@ -98,7 +105,7 @@ int AStar::fillValidNeighbor(Puzzle * current, std::vector<Puzzle *> & neighbor)
 		neighbor[1]->setNewPuzzle(current, TURN_TOP);
 		return 2;
 	}
-	else if (current->iGetEmptyPos() == iNpuzzle)
+	else if (current->iGetEmptyPos() == iNpuzzle - 1)
 	{
 		neighbor.push_back(new Puzzle(current->vecGetPuzzle()));
 		neighbor.push_back(new Puzzle(current->vecGetPuzzle()));
@@ -188,11 +195,11 @@ int AStar::ManhattanHeuristic(Puzzle * current, Puzzle * goal)
 		{
 			if (current->vecGetPuzzle()[i] == goal->vecGetPuzzle()[j])
 			{
-				h += (i % iNpuzzle) - (j % iNpuzzle); 
-				h += (i / iNpuzzle) - (j / iNpuzzle);
+				h += abs((i % iNpuzzle) - (j % iNpuzzle)); 
+				h += abs((i / iNpuzzle) - (j / iNpuzzle));
 				break;
 			}
 		}
 	}
-	return h;
+ 	return h;
 }
