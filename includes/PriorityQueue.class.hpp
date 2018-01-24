@@ -15,34 +15,38 @@
 #include <iostream>
 #include <vector>
 #include "Puzzle.class.hpp"
+#include "ClosedSetTree.class.hpp"
 
 class PriorityQueue
 {
 
 private:
+    size_t iSizePuzzle;
     int iSize;
     int iNbStates;
 
     class Queue
     {
     public:
-
+        Queue(size_t iSize) : content(iSize) {};
         int iPriority;
-        std::vector<Puzzle *> content;
+        ClosedSetTree content;
         Queue * next;
     };
 
     Queue ** beginQueue;
 
+    PriorityQueue();
+
 public:
 
-    PriorityQueue();
+    PriorityQueue(size_t size);
     ~PriorityQueue();
 
     bool empty();
     size_t size() { return iSize; };
     void push(Puzzle * elt);
-	Puzzle * back() { return (*beginQueue)->content.back(); };
+	Puzzle * pop_back() { return (*beginQueue)->content.pop_back(); };
 	void pop();
     bool bIsInQueue(Puzzle * elt); //POP THE ELT OUT
     Puzzle * PopOutOfQueue(Puzzle * elt); //POP THE ELT OUT

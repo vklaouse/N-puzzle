@@ -12,7 +12,7 @@
 
 #include "PriorityQueue.class.hpp"
 
-PriorityQueue::PriorityQueue()
+PriorityQueue::PriorityQueue(size_t size) : iSizePuzzle(size)
 {
     iSize = 0;
     beginQueue = new Queue *;
@@ -46,8 +46,8 @@ void PriorityQueue::push(Puzzle * elt)
 	Queue * sdTmp;
     if (iSize == 0)
     {
-		Queue * newQueue = new Queue;
-   	 	newQueue->content.push_back(elt);
+		Queue * newQueue = new Queue(iSizePuzzle);
+   	 	newQueue->content.add(elt);
 		newQueue->iPriority = elt->iGetPriority();
     	newQueue->next = NULL;
         *beginQueue = newQueue;
@@ -64,13 +64,13 @@ void PriorityQueue::push(Puzzle * elt)
         {
             if (tmp->iPriority == elt->iGetPriority())
             {
-				tmp->content.push_back(elt);
+				tmp->content.add(elt);
 				return;
             }
 			else if (tmp->iPriority > elt->iGetPriority())
 			{
-				Queue * newQueue = new Queue;
-   	 			newQueue->content.push_back(elt);
+				Queue * newQueue = new Queue(iSizePuzzle);
+   	 			newQueue->content.add(elt);
 				newQueue->iPriority = elt->iGetPriority();
     			newQueue->next = tmp;
 				if (sdTmp == NULL)
@@ -89,28 +89,12 @@ void PriorityQueue::push(Puzzle * elt)
 				tmp = tmp->next;
             }
         }
-		Queue * newQueue = new Queue;
-   	 	newQueue->content.push_back(elt);
+		Queue * newQueue = new Queue(iSizePuzzle);
+   	 	newQueue->content.add(elt);
 		newQueue->iPriority = elt->iGetPriority();
     	newQueue->next = NULL;
 		sdTmp->next = newQueue;
     }
-}
-
-void PriorityQueue::pop()
-{
-	Queue *tmp = *beginQueue;
-
-	iSize--;
-	if (tmp->content.size() == 1)
-	{
-		*beginQueue = tmp->next;
-		delete tmp;	
-	}
-	else
-	{
-		tmp->content.pop_back();
-	}
 }
 
 bool PriorityQueue::bIsInQueue(Puzzle * elt)
@@ -125,14 +109,10 @@ bool PriorityQueue::bIsInQueue(Puzzle * elt)
 		}
 		else if (tmp->iPriority == elt->iGetPriority())
 		{
-			for (size_t i = 0; i < tmp->content.size(); i++)
-			{
-				if (*(tmp->content[i]) == *elt)
-				{
-					return true;
-				}
-			}
-			return false;
+			if (tmp->content.find(elt))
+				return true;
+			else
+				return false;
 		}
 		else
 		{
@@ -157,28 +137,7 @@ Puzzle * PriorityQueue::PopOutOfQueue(Puzzle * elt)
 		{
 			for (size_t i = 0; i < tmp->content.size(); i++)
 			{
-				if (*(tmp->content[i]) == *elt)
-				{
-					iSize--;
-					Puzzle * tmpPuzzle = tmp->content[i];
-					if (tmp->content.size() == 1)
-					{
-						if (sdTmp == NULL)
-						{
-							*beginQueue = tmp->next;
-						}
-						else
-						{
-							sdTmp->next = tmp->next;
-						}
-						delete tmp;
-					}
-					else
-					{
-						tmp->content.erase(tmp->content.begin() + i);
-					}
-					return tmpPuzzle;
-				}
+				return tmp->content.findToPop(elt);
 			}
 			return NULL;
 		}

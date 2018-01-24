@@ -2,7 +2,7 @@ NAME = npuzzle
 
 SRC = main.cpp Lexer.class.cpp Parser.class.cpp \
 		AStar.class.cpp PriorityQueue.class.cpp \
-		Puzzle.class.cpp
+		Puzzle.class.cpp ClosedSetTree.class.cpp
 
 OBJ = $(addprefix $(O_DIR)/,$(SRC:.cpp=.o))
 

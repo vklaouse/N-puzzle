@@ -18,6 +18,7 @@
 #include <ctgmath>
 #include "Puzzle.class.hpp"
 #include "PriorityQueue.class.hpp"
+#include "ClosedSetTree.class.hpp"
 
 class AStar
 {
@@ -26,7 +27,7 @@ private:
 	Puzzle * start;
 	Puzzle * goal;
 
-	PriorityQueue closedSet;
+	ClosedSetTree closedSet;
 	PriorityQueue openSet;
 
 	int iSizePuzzle;
