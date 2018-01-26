@@ -12,14 +12,14 @@
 
 #include "ClosedSetTree.class.hpp"
 
-// static void printTable(std::vector<int> iTaquinBoard) {
-// 	for (size_t i = 0; i < iTaquinBoard.size(); i++) 
-// 	{
-// 		std::cout << iTaquinBoard[i] << "  ";
-// 	}
-// 	std::cout << std::endl;
+static void printTable(std::vector<int> iTaquinBoard) {
+	for (size_t i = 0; i < iTaquinBoard.size(); i++) 
+	{
+		std::cout << iTaquinBoard[i] << "  ";
+	}
+	std::cout << std::endl;
 	
-// }
+}
 
 ClosedSetTree::ClosedSetTree(size_t size) : iSize(size)
 {
@@ -38,8 +38,6 @@ void ClosedSetTree::FillTree(Puzzle * elt, size_t i, bool bExist, Node * current
 {
 	int iValue = elt->vecGetPuzzle()[i];
 
-//	printTable(elt->vecGetPuzzle());
-//	std::cout << current << " et " << elt << " et "<< i << std::endl;
 	std::list<Node *>::const_iterator k = current->nextNode.begin();
 
 	if (bExist)
@@ -48,7 +46,6 @@ void ClosedSetTree::FillTree(Puzzle * elt, size_t i, bool bExist, Node * current
 		{
 			if (iValue == (*k)->content)
 			{
-//				std::cout << "Exist " <<i << std::endl;
 				FillTree(elt, ++i, true, *k);
 				return ;
 			}
@@ -62,24 +59,21 @@ void ClosedSetTree::FillTree(Puzzle * elt, size_t i, bool bExist, Node * current
 	}
 	Node * tmp = new Node;
 	tmp->content = iValue;
-	if (i < iSize)
+	if (i < iSize - 1)
 	{
-		std::cout << "Addr midle Node = " << current << std::endl;
-//		std::cout << "New " <<i << std::endl;
 		tmp->currentPuzzle = NULL;
 		current->nextNode.insert(k, tmp);
 		FillTree(elt, ++i, false, tmp);
 	}
 	else
 	{
-		std::cout << "Addr Node = " << tmp << std::endl;
+		current->nextNode.insert(k, tmp);
 		tmp->currentPuzzle = elt;
 	}
 }
 
 void ClosedSetTree::add(Puzzle *elt)
 {
-std::cout << " Begin = " << beginTree << std::endl;
 	iSizeCloseSet++;
 	FillTree(elt, 0, true, beginTree);
 }
@@ -115,30 +109,40 @@ bool ClosedSetTree::find(Puzzle *elt)
 
 bool ClosedSetTree::recPopBack(size_t i, Node * current)
 {
-	std::cout << "Addr = " << current << std::endl;
 	if (i == iSize)
 	{
 		tmpMemory = current->currentPuzzle;
+		std::cout << "LOL 1 " <<  current <<  " et "<<  current->content << " et "<< current->nextNode.size() << std::endl;
 		delete current;
 		return true;
 	}
-	bool btest = recPopBack(++i, current->nextNode.front());
-	if (current->nextNode.size() == 1 && btest)
+	if (current->nextNode.front() == NULL)
 	{
+		std::cerr << "WTF BUG" << i << std::endl;
+		exit (0);
+	}
+	bool btest = recPopBack(++i, current->nextNode.front());
+	if (btest == true)
+	{
+		current->nextNode.pop_front();
+	}
+	if (current->nextNode.size() == 0 && btest)
+	{
+		std::cout << "LOL 2" <<  current <<  " et "<<  current->content << " et "<< current->nextNode.size() << std::endl;
 		delete current;
 		return true;
 	}
 	else
 	{
+		std::cout << "LOL 3" << std::endl;
 		return false;
 	}
 }
 
-Puzzle * ClosedSetTree::pop_back()
+Puzzle * ClosedSetTree::pop_back(bool * bTest)
 {
 	tmpMemory = NULL;
-	std::cout << " Begin 2 = " << beginTree << std::endl;
-	recPopBack(0, beginTree);
+	*bTest = recPopBack(0, beginTree);
 	return tmpMemory;
 }
 
@@ -146,42 +150,67 @@ bool ClosedSetTree::findEltToPop(Puzzle *elt, size_t i, Node * current)
 {
 	if (i == iSize)
 	{
-		tmpMemory = current->currentPuzzle;
-		delete current;
-		return true;
+		std::cout << "+++++++++++++++++++++++++++++" <<  i << " et " << current->content << std::endl;
+		printTable(elt->vecGetPuzzle());
+		printTable(current->currentPuzzle->vecGetPuzzle());
+		if (*(current->currentPuzzle) == *elt)
+		{
+			std::cout << "***************************" << std::endl;
+			tmpMemory = current->currentPuzzle;
+			delete current;
+			return true;
+		}
+		else
+			return false;
 	}
-	else
-		return false;
 
 	int iValue = elt->vecGetPuzzle()[i];
+	printTable(elt->vecGetPuzzle());
+	std::cout << " HELLO BIS " << iValue <<  " et " << i << std::endl;
 	std::list<Node *>::iterator k = current->nextNode.begin();
 
 	while (k != current->nextNode.end())
 	{
+		std::cout << " HELLO : " << iValue <<  " et " << (*k)->content << std::endl;
 		if (iValue == (*k)->content)
 		{
+			std::cout << iValue << " et " << (*k)->content<<  " et " << i << std::endl;
 			bool btest = findEltToPop(elt, ++i, *k);
-			if (current->nextNode.size() == 1 && btest)
+			if (btest == true)
 			{
+				current->nextNode.erase(k);
+			}
+			if (current->nextNode.size() == 0 && btest)
+			{
+				std::cout << " 15 fois ici " << std::cout;
 				delete current;
+				bMemory = true;
 				return true;
 			}
-			else
+			else if (btest)
 			{
-				return false;
+				std::cout << "YOU ARE THE PROBLEME 2 " << std::endl;
+				bMemory = false;
+				return true;
 			}
 		}
-		else if (iValue > (*k)->content)
+		else if (iValue < (*k)->content)
 		{
+			std::cout << "PLEASE WE WANT YOU LIKE TEEMO" << std::endl;
 			return false;
 		}
 		k++;
 	}
+	std::cout << "PLEASE WE WANT YOU LIKE WW" << std::endl;
+	return false;
 }
 
-Puzzle *ClosedSetTree::findToPop(Puzzle * elt)
+Puzzle *ClosedSetTree::findToPop(Puzzle * elt, bool * bTest)
 {
+	bMemory = false;
 	tmpMemory = NULL;
+	std::cout << "/////////////////////////////" << std::endl;
 	findEltToPop(elt, 0, beginTree);
+	*bTest = bMemory;
 	return tmpMemory;
 }

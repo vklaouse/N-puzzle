@@ -40,31 +40,26 @@ void AStar::Compute()
 {
 	std::vector<int> wayTaken;
 
-	openSet.push(start);
-
 	start->SetgScore(0);
 	start->SetPriority(ManhattanHeuristic(start, goal));
+	openSet.push(start);
+	
 	int iAttemptScore;
 
 	std::vector<Puzzle *> neighbor;
 
-	//	int l = 0;
-	std::cout << "toto1" << std::endl;
+	//int l = 0;
 	while (openSet.size() > 0)
 	{
-		std::cout << "toto2" << std::endl;
 		Puzzle * current = openSet.pop_back();
-		std::cout << "toto3" << std::endl;
-/*		if (l < current->iGetPriority())
+	/*	if (l < current->iGetPriority())
 		{
 			l = current->iGetPriority();
 			std::cout << "Priority = " << current->iGetPriority()  << " et empty pos = " << current->iGetEmptyPos() << std::endl;
 			std::cout << "Size openset = " << openSet.size() << " et Size closedset = " << closedSet.size() << std::endl;
 			printTable(current->vecGetPuzzle());
 		}*/
-		std::cout << current << std::endl;
-	std::cout << "Priority = " << current->iGetPriority()  << " et empty pos = " << current->iGetEmptyPos() << std::endl;
-		printTable(current->vecGetPuzzle());
+		std::cout << "TEST 1 " <<  current <<std::endl;
 		if (*current == *goal)
 		{
 			std::cout << "Priority = " << current->iGetPriority()  << " et empty pos = " << current->iGetEmptyPos() << std::endl;
@@ -72,11 +67,20 @@ void AStar::Compute()
 			return; // WIN
 		}
 		closedSet.add(current);
-
+		std::cout << "TEST 2" << std::endl;
 		int iNumNeighbor = fillValidNeighbor(current, neighbor);
+		for (int i = 0; i < iNumNeighbor; i++)
+		{
+			if (neighbor[i] == NULL)
+			{
+				std::cerr << "NEW ERROR" << std::endl;
+				exit(0); 
+			}
+		}
 		Puzzle * EltInOpenset;
 		for (int i = 0; i < iNumNeighbor; i++)
 		{
+			std::cout << "TEST 3" << std::endl;
 			iAttemptScore = current->iGetgScore() + 1;
 			neighbor[i]->SetgScore(iAttemptScore);
 			neighbor[i]->SetPriority(iAttemptScore + ManhattanHeuristic(neighbor[i], goal));
@@ -85,25 +89,33 @@ void AStar::Compute()
 				delete neighbor[i];
 				continue;
 			}
-			if (!(EltInOpenset = openSet.PopOutOfQueue(neighbor[i])))
+			if ((EltInOpenset = openSet.PopOutOfQueue(neighbor[i])) != NULL)
 			{
+				std::cout << "PUSH 1" << std::endl;
+				printTable(current->vecGetPuzzle());
 				openSet.push(neighbor[i]);
 				neighbor[i]->SetCameFrom(current);
-//				printTable(neighbor[i]->vecGetPuzzle());
-//				std::cout << "Priority = " << neighbor[i]->iGetPriority()  << " et empty pos = " << neighbor[i]->iGetEmptyPos() << std::endl;
 			}
 			else
 			{
-				if (neighbor[i]->iGetgScore() > iAttemptScore)
+				if (neighbor[i]->iGetgScore() >= iAttemptScore)
 				{
+					std::cout << "PUSH 2" << std::endl;
+					printTable(current->vecGetPuzzle());
+					std::cout << "TEST1" << std::endl;
 					neighbor[i]->SetCameFrom(current);;
+					std::cout << "TEST2 " <<  neighbor[i] <<std::endl;
 					openSet.push(neighbor[i]);
+					std::cout << "TEST3" << std::endl;
 					delete EltInOpenset;
 				}
 				else
+				{
 					delete neighbor[i];
+				}
 			}
 		}
+		std::cout << "TEST 4" << std::endl;
 		neighbor.clear();
 	}
 }

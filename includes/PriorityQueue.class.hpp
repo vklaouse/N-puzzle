@@ -46,8 +46,7 @@ public:
     bool empty();
     size_t size() { return iSize; };
     void push(Puzzle * elt);
-	Puzzle * pop_back() { return (*beginQueue)->content.pop_back(); };
-	void pop();
+	Puzzle * pop_back();
     bool bIsInQueue(Puzzle * elt); //POP THE ELT OUT
     Puzzle * PopOutOfQueue(Puzzle * elt); //POP THE ELT OUT
 

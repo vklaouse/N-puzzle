@@ -47,7 +47,7 @@ int Parser::inversion(size_t puzzleSize, std::vector< std::vector<int> > vPuzzle
 		for (size_t j = 0; j < puzzleSize; j++) {
 			if (vPuzzle[i][j] == 0)
 			{
-				y = j;
+				y = i;
 			}
 			vOneDimenssionPuzzle.push_back(vPuzzle[i][j]);
 			cnt = (cnt == static_cast<int>(puzzleSize * puzzleSize) ? 0 : cnt);

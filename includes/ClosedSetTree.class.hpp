@@ -29,6 +29,7 @@ private:
 	};
 
 	Puzzle * tmpMemory;
+	bool bMemory;
 	Node * beginTree;
 	size_t iSize;
 	size_t iSizeCloseSet;
@@ -37,6 +38,7 @@ private:
 	bool findElt(Puzzle *elt, size_t i, Node * current);
 	bool recPopBack(size_t i, Node * current);
 	bool findEltToPop(Puzzle *elt, size_t i, Node * current);
+	bool SearchElt(Puzzle *elt, size_t i, Node * current, std::list<Node *>::iterator & k);
 
 public:
 	ClosedSetTree(size_t);
@@ -45,7 +47,7 @@ public:
 	void add(Puzzle *);
 	size_t size() const { return iSizeCloseSet; };
 	bool find(Puzzle *);
-	Puzzle * pop_back();
-	Puzzle * findToPop(Puzzle *);
+	Puzzle * pop_back(bool *);
+	Puzzle * findToPop(Puzzle *, bool *);
 
 };
