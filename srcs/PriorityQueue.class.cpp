@@ -17,7 +17,7 @@ void PriorityQueue::PrintQueue()
 	Queue * tmp = *beginQueue;
 	while (tmp)
 	{
-		std::cout << "Priority = " << tmp->iPriority << std::endl;
+		std::cout << "Priority = " << tmp->iPriority <<  " et " <<  tmp->next << std::endl;
 		tmp->content.PrintFullTree();
 		tmp = tmp->next;
 	}
@@ -77,13 +77,11 @@ void PriorityQueue::push(Puzzle * elt)
         {
             if (tmp->iPriority == elt->iGetPriority())
             {
-//				std::cout << "YOLO" << std::endl;
 				tmp->content.add(elt);
 				return;
             }
 			else if (tmp->iPriority > elt->iGetPriority())
 			{
-//				std::cout << "YOLO3" << std::endl;
 				Queue * newQueue = new Queue(iSizePuzzle);
    	 			newQueue->content.add(elt);
 				newQueue->iPriority = elt->iGetPriority();
@@ -100,7 +98,6 @@ void PriorityQueue::push(Puzzle * elt)
 			}
             else
             {
-//				std::cout << "YOLO2" << std::endl;
 				sdTmp = tmp;
 				tmp = tmp->next;
             }

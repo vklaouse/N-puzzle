@@ -117,7 +117,7 @@ bool ClosedSetTree::findElt(Puzzle *elt, size_t i, Node * current)
 		{
 			return findElt(elt, i + 1, *k);
 		}
-		else if (iValue > (*k)->content)
+		else if (iValue < (*k)->content)
 		{
 			return false;
 		}

@@ -41,7 +41,7 @@ void AStar::Compute()
 	std::vector<int> wayTaken;
 
 	start->SetgScore(0);
-	start->SetPriority(ManhattanHeuristic(start, goal));
+	start->SetPriority(LinearConflict(start, goal));
 	openSet.push(start);
 	
 	int iAttemptScore;
@@ -52,8 +52,8 @@ void AStar::Compute()
 	while (openSet.size() > 0)
 	{
 		Puzzle * current = openSet.pop_back();
-		std::cout << "Priority = " << current->iGetPriority() << " et empty pos = " << current->iGetEmptyPos() << std::endl;
-		printTable(current->vecGetPuzzle());
+		/*std::cout << "Priority = " << current->iGetPriority() << " et empty pos = " << current->iGetEmptyPos() << " ___ ";
+		printTable(current->vecGetPuzzle());*/
 
 		/*if (l % 5 == 0)
 		{
@@ -64,14 +64,14 @@ void AStar::Compute()
 		if (l < current->iGetPriority())
 		{
 			l = current->iGetPriority();
-		/*	std::cout << "Priority = " << current->iGetPriority()  << " et empty pos = " << current->iGetEmptyPos() << std::endl;
+			std::cout << "Priority = " << current->iGetPriority()  << " et empty pos = " << current->iGetEmptyPos() << std::endl;
 			std::cout << "Size openset = " << openSet.size() << " et Size closedset = " << closedSet.size() << std::endl;
-			printTable(current->vecGetPuzzle());*/
-			std::cout << "-------------2" << std::endl;
-			openSet.PrintQueue();
-			std::cout << "-------------3" << std::endl;
-			closedSet.PrintFullTree();
-			std::cout << "--------------4" << std::endl;
+			printTable(current->vecGetPuzzle());
+			// std::cout << "-------------2" << std::endl;
+			// openSet.PrintQueue();
+			// std::cout << "-------------3" << std::endl;
+			// closedSet.PrintFullTree();
+			// std::cout << "--------------4" << std::endl;
 		}
 //		std::cout << "TEST 1 " <<  current <<std::endl;
 		if (*current == *goal)
@@ -103,7 +103,7 @@ void AStar::Compute()
 //			std::cout << "TEST 3" << std::endl;
 			iAttemptScore = current->iGetgScore() + 1;
 			neighbor[i]->SetgScore(iAttemptScore);
-			neighbor[i]->SetPriority(iAttemptScore + ManhattanHeuristic(neighbor[i], goal));
+			neighbor[i]->SetPriority(iAttemptScore + LinearConflict(neighbor[i], goal));
 			if (closedSet.find(neighbor[i]))
 			{
 				delete neighbor[i];
@@ -243,5 +243,171 @@ int AStar::ManhattanHeuristic(Puzzle * current, Puzzle * goal)
 			}
 		}
 	}
+ 	return h;
+}
+
+int AStar::LinearConflict(Puzzle * current, Puzzle * goal)
+{
+	int h = 0;
+//	static int cmpt = 0;
+
+	for (int i = 0; i < iSizePuzzle; i++)
+	{
+		if (i == current->iGetEmptyPos())
+			continue;
+		for (int j = 0; j < iSizePuzzle; j++)
+		{
+			if (current->vecGetPuzzle()[i / iNpuzzle] == goal->vecGetPuzzle()[j / iNpuzzle])
+			{
+				int startLine = (goal->vecGetPuzzle()[j / iNpuzzle]) * iNpuzzle;
+				for (int k = startLine; k < startLine + iNpuzzle; k++)
+				{
+					if (k == i)
+						continue ;
+					for (int l = startLine; l < startLine + iNpuzzle; l++)
+					{
+						if (current->vecGetPuzzle()[k / iNpuzzle] == goal->vecGetPuzzle()[l / iNpuzzle])
+						{
+							if ((i <= k && j <= l) || (i >= k && j >= l))
+								continue;
+							else
+							{
+								if (i < k && j > l)
+								{
+									std::cout << "__ i = " << i << " k = " << k << " j = " << j << " l = " << l << std::endl;
+									h += 2;
+								}
+								else
+									continue;
+							}
+						}
+					}
+				}	
+			}
+			if (current->vecGetPuzzle()[i % iNpuzzle] == goal->vecGetPuzzle()[j % iNpuzzle])
+			{
+				int startRow = goal->vecGetPuzzle()[j % iNpuzzle];
+				for (int k = startRow; k < startRow + iNpuzzle;)
+				{
+					if (k == i)
+					{
+						k += iNpuzzle;
+						continue ;
+					}
+					for (int l = startRow; l < startRow + iNpuzzle;)
+					{
+						if (current->vecGetPuzzle()[k % iNpuzzle] == goal->vecGetPuzzle()[l % iNpuzzle])
+						{
+							if ((i <= k && j <= l) || (i >= k && j >= l))
+							{
+								l += iNpuzzle;
+								continue;
+							}
+							else
+							{
+								if (i < k && j > l)
+								{
+									std::cout << "**i = " << i << " k = " << k << " j = " << j << " l = " << l << std::endl;
+									h += 2;
+								}
+								else
+								{
+									l += iNpuzzle;
+									continue;
+								}
+							}
+						}
+						l += iNpuzzle;
+					}
+					k += iNpuzzle;
+				}	
+			}
+		}
+	}
+//	h += ManhattanHeuristic(current, goal);
+	std::cout << "HELLO WOLRD : " << h << std::endl;
+//	if (cmpt++ > 5)
+		exit(0);
+ 	return h;
+}
+
+int AStar::MisplaceTiles(Puzzle * current, Puzzle * goal)
+{
+	int h = 0;
+
+	for (int i = 0; i < iSizePuzzle; i++)
+	{
+		if (i == current->iGetEmptyPos())
+			continue;
+		if (current->vecGetPuzzle()[i] != goal->vecGetPuzzle()[i])
+		{
+			h++;
+		}
+	}
+ 	return h;
+}
+
+int AStar::TOORAC(Puzzle * current, Puzzle * goal) // If you dont get it, google it
+{
+	int h = 0;
+
+	for (int i = 0; i < iSizePuzzle; i++)
+	{
+		if (i == current->iGetEmptyPos())
+			continue;
+		for (int j = 0; j < iSizePuzzle; j++)
+		{
+			if (current->vecGetPuzzle()[i] == goal->vecGetPuzzle()[j])
+			{
+				if (abs((i % iNpuzzle) - (j % iNpuzzle)) != 0)
+					h++;
+				if (abs((i / iNpuzzle) - (j / iNpuzzle)) != 0)
+					h++;
+				break;
+			}
+		}
+	}
+ 	return h;
+}
+
+int AStar::NMaxSwap(Puzzle * current, Puzzle * goal)
+{
+	Puzzle tmp(current->vecGetPuzzle());
+
+	int h = 0;
+
+	while (!(tmp == *goal))
+	{
+		if (tmp.iGetEmptyPos() != goal->iGetEmptyPos())
+		{
+			int iValue = goal->vecGetPuzzle()[tmp.iGetEmptyPos()];
+			for (int i = 0; i < iSizePuzzle; i++)
+			{
+				if (tmp.vecGetPuzzle()[i] == iValue)
+				{
+					h++;
+					tmp.vecGetPuzzle()[tmp.iGetEmptyPos()] = iValue;
+					tmp.vecGetPuzzle()[i] = 0;
+					tmp.SetEmptyPos(i);
+					break;
+				}
+			}
+		}
+		else
+		{
+			for (int i = 0; i < iSizePuzzle; i++)
+			{
+				if (tmp.vecGetPuzzle()[i] != goal->vecGetPuzzle()[i])
+				{
+					h++;
+					tmp.vecGetPuzzle()[tmp.iGetEmptyPos()] = tmp.vecGetPuzzle()[i];
+					tmp.vecGetPuzzle()[i] = 0;
+					tmp.SetEmptyPos(i);
+					break;
+				}
+			}
+		}
+	}
+	std::cout << h << std::endl;
  	return h;
 }

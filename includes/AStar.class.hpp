@@ -38,6 +38,10 @@ private:
 	int fillValidNeighbor(Puzzle * current, std::vector<Puzzle *> & neighbor);
 
 	int ManhattanHeuristic(Puzzle * current, Puzzle * goal);
+	int LinearConflict(Puzzle * current, Puzzle * goal);
+	int MisplaceTiles(Puzzle * current, Puzzle * goal);
+	int TOORAC(Puzzle * current, Puzzle * goal); //Tiles out of row and column
+	int NMaxSwap(Puzzle * current, Puzzle * goal);
 
 	AStar();
 	

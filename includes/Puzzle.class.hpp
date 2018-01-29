@@ -43,7 +43,8 @@ public:
 	void setNewPuzzle(Puzzle * rhs, int iIndex);
 	void SetgScore(int GScore) { igScore = GScore; };
 	void SetPriority(int Prio) { iPriority = Prio; };
-	void SetCameFrom(Puzzle * old) { cameFrom = old; } ;
+	void SetCameFrom(Puzzle * old) { cameFrom = old; };
+	void SetEmptyPos(int i) { iEmptyPos = i; };
 
 	int iGetgScore() const { return igScore; };
 	int iGetPriority() const { return iPriority; };
