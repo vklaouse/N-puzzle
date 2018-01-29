@@ -21,7 +21,7 @@ static void printTable(std::vector<int> iTaquinBoard) {
 	
 }
 
-AStar::AStar(std::vector<int> & vecStart, std::vector<int> & vecGoal) : closedSet(vecStart.size()), openSet(vecStart.size())
+AStar::AStar(std::vector<int> & vecStart, std::vector<int> & vecGoal, std::string h) : closedSet(vecStart.size()), openSet(vecStart.size()), Heuristic(h)
 {
 	start = new Puzzle(vecStart);
 	goal = new Puzzle(vecGoal);

@@ -44,12 +44,51 @@ static std::vector<std::vector<int> > MainBuildGoal(size_t puzzleSize)
 	return tmpVector;
 }
 
+static void helper()
+{
+	std::cout << std::endl << "Usage: ./npuzzle [ file.txt ] [ heuristics : Manhattan | Linear | Misplaced | Greedy ]" << std::endl << std::endl;
+	std::cout << "	Choose one heuristic :" << std::endl;
+	std::cout << "		Manhattan" << std::endl;
+	std::cout << "		Linear" << std::endl;
+	std::cout << "		Misplaced" << std::endl;
+	std::cout << "		Greedy" << std::endl << std::endl;
+	exit(0);
+}
+
 int main(int ac, char **av) {
 	std::vector< std::vector<int> *> vTaquinBoard;
+	std::string heuristic;
+	std::string puzzleName;
 
 	clock_t tStart = clock();
 	if (ac >= 2) {
-		Lexer(av[1], &vTaquinBoard);
+
+		for (size_t i = 1; i < static_cast<size_t>(ac); i++)
+		{
+			if ((std::string(av[i]) == "Manhattan" 
+				|| std::string(av[i]) == "Linear"
+				|| std::string(av[i]) == "Misplaced"
+				|| std::string(av[i]) == "Greedy") 
+				&& heuristic.empty())
+			{
+				heuristic = av[i];
+			}
+			if (std::string(av[i]) != "Manhattan"
+				&& std::string(av[i]) != "Linear"
+				&& std::string(av[i]) != "Greedy"
+				&& std::string(av[i]) != "Misplaced"
+				&& puzzleName.empty())
+			{
+				puzzleName = av[i];
+			}
+		}
+		if (puzzleName.empty())
+			helper();
+		if (heuristic.empty())
+			heuristic = "Manhattan";
+
+
+		Lexer(puzzleName, &vTaquinBoard);
 		
 		std::vector<int> goal;
 		std::vector<int> vABoard;
@@ -66,7 +105,7 @@ int main(int ac, char **av) {
 			delete vTaquinBoard[i];
 		}
 		Parser((std::vector< std::vector<int> > )vBoard);
-		AStar(vABoard, goal);
+		AStar(vABoard, goal, heuristic);
 	}
 	printf("Time taken: %.2fs\n", (double)(clock() - tStart) / CLOCKS_PER_SEC);
 	return 0;

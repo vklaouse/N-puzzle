@@ -32,6 +32,7 @@ private:
 
 	int iSizePuzzle;
 	int iNpuzzle;
+	std::string Heuristic;
 
 	void Compute();
 	int fillValidNeighbor(Puzzle * current, std::vector<Puzzle *> & neighbor);
@@ -41,7 +42,7 @@ private:
 	AStar();
 	
 public:
-	AStar(std::vector<int> & Start, std::vector<int> & Goal);
+	AStar(std::vector<int> & Start, std::vector<int> & Goal, std::string);
 	~AStar() { };
 
 };
