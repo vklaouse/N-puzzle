@@ -48,26 +48,46 @@ void AStar::Compute()
 
 	std::vector<Puzzle *> neighbor;
 
-	//int l = 0;
+	int l = 0;
 	while (openSet.size() > 0)
 	{
 		Puzzle * current = openSet.pop_back();
-	/*	if (l < current->iGetPriority())
+		std::cout << "Priority = " << current->iGetPriority() << " et empty pos = " << current->iGetEmptyPos() << std::endl;
+		printTable(current->vecGetPuzzle());
+
+		/*if (l % 5 == 0)
+		{
+			std::cout << "--------------1" << std::endl;
+			closedSet.PrintFullTree();
+			std::cout << "--------------2" << std::endl;
+		}*/
+		if (l < current->iGetPriority())
 		{
 			l = current->iGetPriority();
-			std::cout << "Priority = " << current->iGetPriority()  << " et empty pos = " << current->iGetEmptyPos() << std::endl;
+		/*	std::cout << "Priority = " << current->iGetPriority()  << " et empty pos = " << current->iGetEmptyPos() << std::endl;
 			std::cout << "Size openset = " << openSet.size() << " et Size closedset = " << closedSet.size() << std::endl;
-			printTable(current->vecGetPuzzle());
-		}*/
-		std::cout << "TEST 1 " <<  current <<std::endl;
+			printTable(current->vecGetPuzzle());*/
+			std::cout << "-------------2" << std::endl;
+			openSet.PrintQueue();
+			std::cout << "-------------3" << std::endl;
+			closedSet.PrintFullTree();
+			std::cout << "--------------4" << std::endl;
+		}
+//		std::cout << "TEST 1 " <<  current <<std::endl;
 		if (*current == *goal)
 		{
 			std::cout << "Priority = " << current->iGetPriority()  << " et empty pos = " << current->iGetEmptyPos() << std::endl;
 			printTable(current->vecGetPuzzle());
 			return; // WIN
 		}
+//		std::cout << "--------------1" << std::endl;
+//		closedSet.PrintFullTree();
+//		std::cout << "--------------2" << std::endl;
 		closedSet.add(current);
-		std::cout << "TEST 2" << std::endl;
+//		std::cout << "-------------3" << std::endl;
+//		closedSet.PrintFullTree();
+//		std::cout << "--------------4" << std::endl;
+//		std::cout << "TEST 2" << std::endl;
 		int iNumNeighbor = fillValidNeighbor(current, neighbor);
 		for (int i = 0; i < iNumNeighbor; i++)
 		{
@@ -80,7 +100,7 @@ void AStar::Compute()
 		Puzzle * EltInOpenset;
 		for (int i = 0; i < iNumNeighbor; i++)
 		{
-			std::cout << "TEST 3" << std::endl;
+//			std::cout << "TEST 3" << std::endl;
 			iAttemptScore = current->iGetgScore() + 1;
 			neighbor[i]->SetgScore(iAttemptScore);
 			neighbor[i]->SetPriority(iAttemptScore + ManhattanHeuristic(neighbor[i], goal));
@@ -89,24 +109,22 @@ void AStar::Compute()
 				delete neighbor[i];
 				continue;
 			}
-			if ((EltInOpenset = openSet.PopOutOfQueue(neighbor[i])) != NULL)
+			bool bBetterWay = true;
+			if ((EltInOpenset = openSet.PopOutOfQueue(neighbor[i], &bBetterWay)) != NULL)
 			{
-				std::cout << "PUSH 1" << std::endl;
-				printTable(current->vecGetPuzzle());
 				openSet.push(neighbor[i]);
 				neighbor[i]->SetCameFrom(current);
+			}
+			else if (!bBetterWay)
+			{
+				delete neighbor[i];
 			}
 			else
 			{
 				if (neighbor[i]->iGetgScore() >= iAttemptScore)
 				{
-					std::cout << "PUSH 2" << std::endl;
-					printTable(current->vecGetPuzzle());
-					std::cout << "TEST1" << std::endl;
 					neighbor[i]->SetCameFrom(current);;
-					std::cout << "TEST2 " <<  neighbor[i] <<std::endl;
 					openSet.push(neighbor[i]);
-					std::cout << "TEST3" << std::endl;
 					delete EltInOpenset;
 				}
 				else
@@ -115,7 +133,6 @@ void AStar::Compute()
 				}
 			}
 		}
-		std::cout << "TEST 4" << std::endl;
 		neighbor.clear();
 	}
 }

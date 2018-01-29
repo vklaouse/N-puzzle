@@ -12,6 +12,17 @@
 
 #include "PriorityQueue.class.hpp"
 
+void PriorityQueue::PrintQueue()
+{
+	Queue * tmp = *beginQueue;
+	while (tmp)
+	{
+		std::cout << "Priority = " << tmp->iPriority << std::endl;
+		tmp->content.PrintFullTree();
+		tmp = tmp->next;
+	}
+}
+
 PriorityQueue::PriorityQueue(size_t size) : iSizePuzzle(size)
 {
     iSize = 0;
@@ -42,7 +53,7 @@ bool PriorityQueue::empty()
 
 void PriorityQueue::push(Puzzle * elt)
 {
-	std::cout << " COMPTEUR PUSH" << iSize << std::endl;
+//	std::cout << " COMPTEUR PUSH" << iSize << std::endl;
     Queue * tmp;
 	Queue * sdTmp;
     if (iSize == 0)
@@ -61,18 +72,18 @@ void PriorityQueue::push(Puzzle * elt)
 		iNbStates++;
         tmp = *beginQueue;
 		sdTmp = NULL;
-		std::cout << "YOLO?? : " <<  tmp << std::endl;
+//		std::cout << "YOLO?? : " <<  tmp << std::endl;
         while (tmp)
         {
             if (tmp->iPriority == elt->iGetPriority())
             {
-				std::cout << "YOLO" << std::endl;
+//				std::cout << "YOLO" << std::endl;
 				tmp->content.add(elt);
 				return;
             }
 			else if (tmp->iPriority > elt->iGetPriority())
 			{
-				std::cout << "YOLO3" << std::endl;
+//				std::cout << "YOLO3" << std::endl;
 				Queue * newQueue = new Queue(iSizePuzzle);
    	 			newQueue->content.add(elt);
 				newQueue->iPriority = elt->iGetPriority();
@@ -89,7 +100,7 @@ void PriorityQueue::push(Puzzle * elt)
 			}
             else
             {
-				std::cout << "YOLO2" << std::endl;
+//				std::cout << "YOLO2" << std::endl;
 				sdTmp = tmp;
 				tmp = tmp->next;
             }
@@ -98,7 +109,7 @@ void PriorityQueue::push(Puzzle * elt)
    	 	newQueue->content.add(elt);
 		newQueue->iPriority = elt->iGetPriority();
     	newQueue->next = NULL;
-		std::cout << "HERE : "<< iSize << std::endl;
+//		std::cout << "HERE : "<< iSize << std::endl;
 		sdTmp->next = newQueue;
     }
 }
@@ -128,9 +139,9 @@ bool PriorityQueue::bIsInQueue(Puzzle * elt)
 	return false;
 }
 
-Puzzle * PriorityQueue::PopOutOfQueue(Puzzle * elt)
+Puzzle * PriorityQueue::PopOutOfQueue(Puzzle * elt, bool * bBetterWay)
 {
-	std::cout << " COMPTEUR POP_OUT_OF_QUEUE " << iSize << std::endl;
+//	std::cout << " COMPTEUR POP_OUT_OF_QUEUE " << iSize << std::endl;
 	Queue * tmp = *beginQueue;
 	Queue * sdTmp = NULL;
 
@@ -138,21 +149,21 @@ Puzzle * PriorityQueue::PopOutOfQueue(Puzzle * elt)
 	{
 		if (tmp->iPriority > elt->iGetPriority())
 		{
-			std::cout << "OUT 1" << std::endl;
+//			std::cout << "OUT 1" << std::endl;
 			return NULL;
 		}
 		else if (tmp->iPriority == elt->iGetPriority())
 		{
 			bool bTest = false;
-			Puzzle * tmpPuzzle = tmp->content.findToPop(elt, &bTest);
-			std::cout << "HERE = " <<  tmpPuzzle << " et " <<  bTest << std::endl;
+			Puzzle * tmpPuzzle = tmp->content.findToPop(elt, &bTest, bBetterWay);
+//			std::cout << "HERE = " <<  tmpPuzzle << " et " <<  bTest << std::endl;
 			if (bTest)
 			{
-				std::cout << "-----------------------------------" << std::endl;
+//				std::cout << "-----------------------------------" << std::endl;
 				if (sdTmp == NULL)
 				{
-					std::cout << "YOU ARE THE PROBLEME" << std::endl;
-					*beginQueue = NULL;
+//					std::cout << "YOU ARE THE PROBLEME" << std::endl;
+					*beginQueue = tmp->next;
 				}
 				else
 				{
@@ -160,7 +171,7 @@ Puzzle * PriorityQueue::PopOutOfQueue(Puzzle * elt)
 				}
 				delete tmp;
 			}
-			std::cout << "OUT 2 " <<  tmpPuzzle<< std::endl;
+//			std::cout << "OUT 2 " <<  tmpPuzzle<< std::endl;
 			if (tmpPuzzle)
 				iSize--;
 			return tmpPuzzle;
@@ -171,13 +182,13 @@ Puzzle * PriorityQueue::PopOutOfQueue(Puzzle * elt)
 			tmp = tmp->next;
 		}
 	}
-	std::cout << "OUT 1" << std::endl;
+//	std::cout << "OUT 1" << std::endl;
 	return NULL;
 }
 
 Puzzle * PriorityQueue::pop_back() 
 { 
-	std::cout << " COMPTEUR POP_BACK " << iSize << std::endl;
+//	std::cout << " COMPTEUR POP_BACK " << iSize << std::endl;
 	iSize--;
 	bool test = false;
 	Puzzle * tmp = (*beginQueue)->content.pop_back(&test); 
@@ -187,6 +198,6 @@ Puzzle * PriorityQueue::pop_back()
 		delete (*beginQueue);
 		*beginQueue = tmpQueue;
 	}
-	std::cout << " COMPTEUR POP_BACK END " << iSize << std::endl;
+//	std::cout << " COMPTEUR POP_BACK END " << iSize << std::endl;
 	return tmp;
 }

@@ -37,8 +37,8 @@ private:
 	void FillTree(Puzzle * elt, size_t i, bool bExist, Node * current);
 	bool findElt(Puzzle *elt, size_t i, Node * current);
 	bool recPopBack(size_t i, Node * current);
-	bool findEltToPop(Puzzle *elt, size_t i, Node * current);
-	bool SearchElt(Puzzle *elt, size_t i, Node * current, std::list<Node *>::iterator & k);
+	bool findEltToPop(Puzzle *elt, size_t i, Node * current, bool *);
+	void printTreeRec(size_t i, Node * current);
 
 public:
 	ClosedSetTree(size_t);
@@ -48,6 +48,8 @@ public:
 	size_t size() const { return iSizeCloseSet; };
 	bool find(Puzzle *);
 	Puzzle * pop_back(bool *);
-	Puzzle * findToPop(Puzzle *, bool *);
+	Puzzle * findToPop(Puzzle *, bool *, bool *);
+
+	void PrintFullTree();
 
 };

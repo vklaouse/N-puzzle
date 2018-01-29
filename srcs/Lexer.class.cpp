@@ -5,7 +5,8 @@ Lexer::Lexer(std::string sFileName, std::vector< std::vector<int> *> *TaquinBoar
 	CFileStream = new std::ifstream(sFileName);
 
 	if (CFileStream->fail()) {
-		std::cerr << "Wrong File !" << std::endl;
+		std::cerr << "Wrong File !" << sFileName << std::endl;
+		while(true);
 		exit(0);
 	}
 

@@ -10,6 +10,8 @@
 	
 // }
 
+#include <time.h>
+
 
 static std::vector<std::vector<int> > MainBuildGoal(size_t puzzleSize) 
 {
@@ -45,6 +47,7 @@ static std::vector<std::vector<int> > MainBuildGoal(size_t puzzleSize)
 int main(int ac, char **av) {
 	std::vector< std::vector<int> *> vTaquinBoard;
 
+	clock_t tStart = clock();
 	if (ac >= 2) {
 		Lexer(av[1], &vTaquinBoard);
 		
@@ -65,6 +68,8 @@ int main(int ac, char **av) {
 		Parser((std::vector< std::vector<int> > )vBoard);
 		AStar(vABoard, goal);
 	}
+	printf("Time taken: %.2fs\n", (double)(clock() - tStart) / CLOCKS_PER_SEC);
 	return 0;
+
 }
 
