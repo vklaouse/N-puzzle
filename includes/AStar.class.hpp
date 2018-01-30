@@ -47,6 +47,6 @@ private:
 	
 public:
 	AStar(std::vector<int> & Start, std::vector<int> & Goal, std::string);
-	~AStar() { };
+	~AStar();
 
 };

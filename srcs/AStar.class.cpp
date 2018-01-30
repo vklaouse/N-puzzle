@@ -36,6 +36,12 @@ AStar::AStar(std::vector<int> & vecStart, std::vector<int> & vecGoal, std::strin
 	}*/
 }
 
+AStar::~AStar()
+{
+	delete start;
+	delete goal;
+}
+
 void AStar::Compute()
 {
 	std::vector<int> wayTaken;
@@ -135,6 +141,7 @@ void AStar::Compute()
 		}
 		neighbor.clear();
 	}
+	while (true);
 }
 
 int AStar::fillValidNeighbor(Puzzle * current, std::vector<Puzzle *> & neighbor)
@@ -249,85 +256,66 @@ int AStar::ManhattanHeuristic(Puzzle * current, Puzzle * goal)
 int AStar::LinearConflict(Puzzle * current, Puzzle * goal)
 {
 	int h = 0;
-//	static int cmpt = 0;
-
 	for (int i = 0; i < iSizePuzzle; i++)
 	{
 		if (i == current->iGetEmptyPos())
 			continue;
 		for (int j = 0; j < iSizePuzzle; j++)
 		{
-			if (current->vecGetPuzzle()[i / iNpuzzle] == goal->vecGetPuzzle()[j / iNpuzzle])
+			if (current->vecGetPuzzle()[i] == goal->vecGetPuzzle()[j])
 			{
-				int startLine = (goal->vecGetPuzzle()[j / iNpuzzle]) * iNpuzzle;
-				for (int k = startLine; k < startLine + iNpuzzle; k++)
+				if (i / iNpuzzle == j / iNpuzzle)
 				{
-					if (k == i)
-						continue ;
-					for (int l = startLine; l < startLine + iNpuzzle; l++)
+					int iStartLine = (i / iNpuzzle) * iNpuzzle;
+					for (int k = iStartLine; k < iStartLine + iNpuzzle; k++)
 					{
-						if (current->vecGetPuzzle()[k / iNpuzzle] == goal->vecGetPuzzle()[l / iNpuzzle])
+						if (k == current->iGetEmptyPos() || k == i)
+							continue;
+						for (int l = iStartLine; l < iStartLine + iNpuzzle; l++)
 						{
-							if ((i <= k && j <= l) || (i >= k && j >= l))
-								continue;
-							else
+							if (current->vecGetPuzzle()[k] == goal->vecGetPuzzle()[l])
 							{
-								if (i < k && j > l)
+								if (i < j && k > l)
 								{
-									std::cout << "__ i = " << i << " k = " << k << " j = " << j << " l = " << l << std::endl;
 									h += 2;
 								}
-								else
-									continue;
 							}
 						}
 					}
-				}	
-			}
-			if (current->vecGetPuzzle()[i % iNpuzzle] == goal->vecGetPuzzle()[j % iNpuzzle])
-			{
-				int startRow = goal->vecGetPuzzle()[j % iNpuzzle];
-				for (int k = startRow; k < startRow + iNpuzzle;)
+				}
+
+				if (i % iNpuzzle == j % iNpuzzle)
 				{
-					if (k == i)
+					int iStartLine = i % iNpuzzle;
+					for (int k = iStartLine; k < iStartLine + iNpuzzle * (iNpuzzle - 1);)
 					{
+						if (k == current->iGetEmptyPos() || k == i)
+						{
+							k += iNpuzzle;
+							continue;
+						}
+						for (int l = iStartLine; l < iStartLine + iNpuzzle * (iNpuzzle - 1);)
+						{
+							if (current->vecGetPuzzle()[k] == goal->vecGetPuzzle()[l])
+							{
+								if (i < j && k > l)
+								{
+									h += 2;
+								}
+							}
+							l += iNpuzzle;
+						}
 						k += iNpuzzle;
-						continue ;
 					}
-					for (int l = startRow; l < startRow + iNpuzzle;)
-					{
-						if (current->vecGetPuzzle()[k % iNpuzzle] == goal->vecGetPuzzle()[l % iNpuzzle])
-						{
-							if ((i <= k && j <= l) || (i >= k && j >= l))
-							{
-								l += iNpuzzle;
-								continue;
-							}
-							else
-							{
-								if (i < k && j > l)
-								{
-									std::cout << "**i = " << i << " k = " << k << " j = " << j << " l = " << l << std::endl;
-									h += 2;
-								}
-								else
-								{
-									l += iNpuzzle;
-									continue;
-								}
-							}
-						}
-						l += iNpuzzle;
-					}
-					k += iNpuzzle;
-				}	
+				}
+
+
+				h += abs((i % iNpuzzle) - (j % iNpuzzle));
+				h += abs((i / iNpuzzle) - (j / iNpuzzle));
+				break;
 			}
 		}
 	}
-//	h += ManhattanHeuristic(current, goal);
-	std::cout << "HELLO WOLRD : " << h << std::endl;
-//	if (cmpt++ > 5)
-		exit(0);
  	return h;
 }
 

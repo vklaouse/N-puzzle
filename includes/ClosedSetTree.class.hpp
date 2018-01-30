@@ -39,6 +39,7 @@ private:
 	bool recPopBack(size_t i, Node * current);
 	bool findEltToPop(Puzzle *elt, size_t i, Node * current, bool *);
 	void printTreeRec(size_t i, Node * current);
+	void FreeFullTree(size_t i, Node *current);
 
 public:
 	ClosedSetTree(size_t);

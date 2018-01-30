@@ -107,7 +107,7 @@ int main(int ac, char **av) {
 		Parser((std::vector< std::vector<int> > )vBoard);
 		AStar(vABoard, goal, heuristic);
 	}
-	printf("Time taken: %.2fs\n", (double)(clock() - tStart) / CLOCKS_PER_SEC);
+	std::cout << "Time taken: " <<  (double)(clock() - tStart) / CLOCKS_PER_SEC << std::endl;
 	return 0;
 
 }
