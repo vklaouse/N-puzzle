@@ -269,8 +269,6 @@ int AStar::LinearConflict(Puzzle * current, Puzzle * goal)
 						k += iNpuzzle;
 					}
 				}
-
-
 				h += abs((i % iNpuzzle) - (j % iNpuzzle));
 				h += abs((i / iNpuzzle) - (j / iNpuzzle));
 				break;
@@ -334,7 +332,6 @@ int AStar::NMaxSwap(Puzzle * current, Puzzle * goal)
 			{
 				if (tmp.vecGetPuzzle()[i] == iValue)
 				{
-					h++;
 					tmp.vecGetPuzzle()[tmp.iGetEmptyPos()] = iValue;
 					tmp.vecGetPuzzle()[i] = 0;
 					tmp.SetEmptyPos(i);
@@ -348,7 +345,6 @@ int AStar::NMaxSwap(Puzzle * current, Puzzle * goal)
 			{
 				if (tmp.vecGetPuzzle()[i] != goal->vecGetPuzzle()[i])
 				{
-					h++;
 					tmp.vecGetPuzzle()[tmp.iGetEmptyPos()] = tmp.vecGetPuzzle()[i];
 					tmp.vecGetPuzzle()[i] = 0;
 					tmp.SetEmptyPos(i);
@@ -356,7 +352,7 @@ int AStar::NMaxSwap(Puzzle * current, Puzzle * goal)
 				}
 			}
 		}
+		h++;
 	}
-	std::cout << h << std::endl;
  	return h;
 }
