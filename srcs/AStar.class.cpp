@@ -12,13 +12,77 @@
 
 #include "AStar.class.hpp"
 
-static void printTable(std::vector<int> iTaquinBoard) {
+static void printTable(std::vector<int> iTaquinBoard, int size = 0) {
 	for (size_t i = 0; i < iTaquinBoard.size(); i++) 
 	{
-		std::cout << iTaquinBoard[i] << "  ";
+		if (size == 0)
+			std::cout << iTaquinBoard[i] << "  ";
+		else
+		{
+			if (!(i % size))
+				std::cout << std::endl;
+			if (iTaquinBoard[i] == 0)
+				std::cout << "\033[33m" << iTaquinBoard[i] << "\033[m  ";
+			else
+				std::cout << iTaquinBoard[i] << "  ";
+		}
 	}
 	std::cout << std::endl;
 	
+}
+
+
+void AStar::printCameFrom(Puzzle * p, int Priority, int size)
+{
+	if (p->GetCameFrom() && Priority != 0)
+	{
+		printCameFrom(p->GetCameFrom(), Priority - 1, size);
+		printTable(p->GetCameFrom()->vecGetPuzzle(), size);
+	}
+	return ;
+}
+
+void AStar::encodeDataVisu(Puzzle * p, int Priority, int size)
+{
+	std::vector< std::vector<int> > res(Priority + 1 , std::vector<int>(size * size));
+	std::string encodedData = "let size = " + std::to_string(size) + ";\nlet puzzleStates = [\n";
+
+	getDataVisu(&res, Priority, p);
+	res[Priority] = p->vecGetPuzzle();
+	for (size_t i = 0; i < res.size(); i++)
+	{
+		encodedData += "\t[";
+		for (size_t j = 0; j < res[i].size(); j++)
+		{
+			encodedData += std::to_string(res[i][j]);
+			if ((j + 1) < res[i].size())
+				encodedData += ", ";
+		}
+		encodedData += "]";
+		if ((i + 1) < res.size())
+			encodedData += ",\n";
+		else
+			encodedData += "];";
+	}
+
+	std::ofstream fichier("visu/data.js", std::ios::out | std::ios::trunc);
+	if (fichier)
+	{
+		fichier << encodedData;
+		fichier.close();
+	}
+	return ;
+}
+
+void AStar::getDataVisu(std::vector< std::vector<int> > * res, int Priority, Puzzle * p)
+{
+	if (p->GetCameFrom() && Priority >= 1)
+	{
+		getDataVisu(res, Priority - 1, p->GetCameFrom());
+		res->at(Priority - 1) = p->GetCameFrom()->vecGetPuzzle();
+	}
+	return ;
+
 }
 
 AStar::AStar(std::vector<int> & vecStart, std::vector<int> & vecGoal, std::string h) : closedSet(vecStart.size()), openSet(vecStart.size()), Heuristic(h)
@@ -61,6 +125,8 @@ void AStar::Compute()
 		}
 		if (*current == *goal)
 		{
+			printCameFrom(current, current->iGetPriority(), iNpuzzle);
+			encodeDataVisu(current, current->iGetPriority(), iNpuzzle);
 			std::cout << "Priority = " << current->iGetPriority()  << " et empty pos = " << current->iGetEmptyPos() << std::endl;
 			printTable(current->vecGetPuzzle());
 			delete current;

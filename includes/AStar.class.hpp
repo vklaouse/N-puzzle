@@ -16,6 +16,7 @@
 #include <vector>
 #include <queue>
 #include <ctgmath>
+#include <fstream>
 #include "Puzzle.class.hpp"
 #include "PriorityQueue.class.hpp"
 #include "ClosedSetTree.class.hpp"
@@ -42,6 +43,10 @@ private:
 	int MisplaceTiles(Puzzle * current, Puzzle * goal);
 	int TOORAC(Puzzle * current, Puzzle * goal); //Tiles out of row and column
 	int NMaxSwap(Puzzle * current, Puzzle * goal);
+
+	void printCameFrom(Puzzle *, int, int);
+	void encodeDataVisu(Puzzle *, int, int);
+	void getDataVisu(std::vector< std::vector<int> > *, int, Puzzle *);
 
 	AStar();
 	
