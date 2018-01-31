@@ -46,12 +46,12 @@ static std::vector<std::vector<int> > MainBuildGoal(size_t puzzleSize)
 
 static void helper()
 {
-	std::cout << std::endl << "Usage: ./npuzzle [ file.txt ] [ heuristics : Manhattan | Linear | Misplaced | Greedy ]" << std::endl << std::endl;
-	std::cout << "	Choose one heuristic :" << std::endl;
-	std::cout << "		Manhattan" << std::endl;
-	std::cout << "		Linear" << std::endl;
-	std::cout << "		Misplaced" << std::endl;
-	std::cout << "		Greedy" << std::endl << std::endl;
+//	std::cout << std::endl << "Usage: ./npuzzle [ file.txt ] [ heuristics : Manhattan | Linear | Misplaced | Greedy ]" << std::endl << std::endl;
+//	std::cout << "	Choose one heuristic :" << std::endl;
+//	std::cout << "		Manhattan" << std::endl;
+//	std::cout << "		Linear" << std::endl;
+//	std::cout << "		Misplaced" << std::endl;
+//	std::cout << "		Greedy" << std::endl << std::endl;
 	exit(0);
 }
 
@@ -60,7 +60,7 @@ int main(int ac, char **av) {
 	std::string heuristic;
 	std::string puzzleName;
 
-	clock_t tStart = clock();
+//	clock_t tStart = clock();
 	if (ac >= 2) {
 
 		for (size_t i = 1; i < static_cast<size_t>(ac); i++)
@@ -107,7 +107,7 @@ int main(int ac, char **av) {
 		Parser((std::vector< std::vector<int> > )vBoard);
 		AStar(vABoard, goal, heuristic);
 	}
-	std::cout << "Time taken: " <<  (double)(clock() - tStart) / CLOCKS_PER_SEC << std::endl;
+//	std::cout << "Time taken: " <<  (double)(clock() - tStart) / CLOCKS_PER_SEC << std::endl;
 	return 0;
 
 }

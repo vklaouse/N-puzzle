@@ -53,7 +53,6 @@ bool PriorityQueue::empty()
 
 void PriorityQueue::push(Puzzle * elt)
 {
-//	std::cout << " COMPTEUR PUSH" << iSize << std::endl;
     Queue * tmp;
 	Queue * sdTmp;
     if (iSize == 0)
@@ -72,7 +71,6 @@ void PriorityQueue::push(Puzzle * elt)
 		iNbStates++;
         tmp = *beginQueue;
 		sdTmp = NULL;
-//		std::cout << "YOLO?? : " <<  tmp << std::endl;
         while (tmp)
         {
             if (tmp->iPriority == elt->iGetPriority())
@@ -106,7 +104,6 @@ void PriorityQueue::push(Puzzle * elt)
    	 	newQueue->content.add(elt);
 		newQueue->iPriority = elt->iGetPriority();
     	newQueue->next = NULL;
-//		std::cout << "HERE : "<< iSize << std::endl;
 		sdTmp->next = newQueue;
     }
 }
@@ -136,42 +133,31 @@ bool PriorityQueue::bIsInQueue(Puzzle * elt)
 	return false;
 }
 
-Puzzle * PriorityQueue::PopOutOfQueue(Puzzle * elt, bool * bBetterWay)
+bool PriorityQueue::PopOutOfQueue(Puzzle * elt, bool * bBetterWay)
 {
-//	std::cout << " COMPTEUR POP_OUT_OF_QUEUE " << iSize << std::endl;
 	Queue * tmp = *beginQueue;
 	Queue * sdTmp = NULL;
 
 	while (tmp)
 	{
-		if (tmp->iPriority > elt->iGetPriority())
+		bool bTest = false;
+		bool bPuzzle = tmp->content.findToPop(elt, &bTest, bBetterWay);
+		if (bTest)
 		{
-//			std::cout << "OUT 1" << std::endl;
-			return NULL;
-		}
-		else if (tmp->iPriority == elt->iGetPriority())
-		{
-			bool bTest = false;
-			Puzzle * tmpPuzzle = tmp->content.findToPop(elt, &bTest, bBetterWay);
-//			std::cout << "HERE = " <<  tmpPuzzle << " et " <<  bTest << std::endl;
-			if (bTest)
+			if (sdTmp == NULL)
 			{
-//				std::cout << "-----------------------------------" << std::endl;
-				if (sdTmp == NULL)
-				{
-//					std::cout << "YOU ARE THE PROBLEME" << std::endl;
-					*beginQueue = tmp->next;
-				}
-				else
-				{
-					sdTmp->next = tmp->next;
-				}
-				delete tmp;
+				*beginQueue = tmp->next;
 			}
-//			std::cout << "OUT 2 " <<  tmpPuzzle<< std::endl;
-			if (tmpPuzzle)
-				iSize--;
-			return tmpPuzzle;
+			else
+			{
+				sdTmp->next = tmp->next;
+			}
+			delete tmp;
+		}
+		if (bPuzzle)
+		{
+			iSize--;
+			return bPuzzle;
 		}
 		else
 		{
@@ -179,13 +165,11 @@ Puzzle * PriorityQueue::PopOutOfQueue(Puzzle * elt, bool * bBetterWay)
 			tmp = tmp->next;
 		}
 	}
-//	std::cout << "OUT 1" << std::endl;
-	return NULL;
+	return false;
 }
 
 Puzzle * PriorityQueue::pop_back() 
 { 
-//	std::cout << " COMPTEUR POP_BACK " << iSize << std::endl;
 	iSize--;
 	bool test = false;
 	Puzzle * tmp = (*beginQueue)->content.pop_back(&test); 
@@ -195,6 +179,5 @@ Puzzle * PriorityQueue::pop_back()
 		delete (*beginQueue);
 		*beginQueue = tmpQueue;
 	}
-//	std::cout << " COMPTEUR POP_BACK END " << iSize << std::endl;
 	return tmp;
 }

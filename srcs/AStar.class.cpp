@@ -28,17 +28,10 @@ AStar::AStar(std::vector<int> & vecStart, std::vector<int> & vecGoal, std::strin
 	iSizePuzzle = vecStart.size();
 	iNpuzzle = sqrt(iSizePuzzle);
 	Compute();
-	/*
-	if (iNpuzzle * iNpuzzle != iSizePuzzle)
-	{
-		std::cerr << "Error : Wrong Puzzle size" << std::endl;
-		exit(0);
-	}*/
 }
 
 AStar::~AStar()
 {
-	delete start;
 	delete goal;
 }
 
@@ -53,47 +46,27 @@ void AStar::Compute()
 	int iAttemptScore;
 
 	std::vector<Puzzle *> neighbor;
+	Puzzle * current;
 
 	int l = 0;
 	while (openSet.size() > 0)
 	{
-		Puzzle * current = openSet.pop_back();
-		/*std::cout << "Priority = " << current->iGetPriority() << " et empty pos = " << current->iGetEmptyPos() << " ___ ";
-		printTable(current->vecGetPuzzle());*/
-
-		/*if (l % 5 == 0)
-		{
-			std::cout << "--------------1" << std::endl;
-			closedSet.PrintFullTree();
-			std::cout << "--------------2" << std::endl;
-		}*/
+		current = openSet.pop_back();
 		if (l < current->iGetPriority())
 		{
 			l = current->iGetPriority();
 			std::cout << "Priority = " << current->iGetPriority()  << " et empty pos = " << current->iGetEmptyPos() << std::endl;
 			std::cout << "Size openset = " << openSet.size() << " et Size closedset = " << closedSet.size() << std::endl;
 			printTable(current->vecGetPuzzle());
-			// std::cout << "-------------2" << std::endl;
-			// openSet.PrintQueue();
-			// std::cout << "-------------3" << std::endl;
-			// closedSet.PrintFullTree();
-			// std::cout << "--------------4" << std::endl;
 		}
-//		std::cout << "TEST 1 " <<  current <<std::endl;
 		if (*current == *goal)
 		{
 			std::cout << "Priority = " << current->iGetPriority()  << " et empty pos = " << current->iGetEmptyPos() << std::endl;
 			printTable(current->vecGetPuzzle());
-			return; // WIN
+			delete current;
+			return;
 		}
-//		std::cout << "--------------1" << std::endl;
-//		closedSet.PrintFullTree();
-//		std::cout << "--------------2" << std::endl;
 		closedSet.add(current);
-//		std::cout << "-------------3" << std::endl;
-//		closedSet.PrintFullTree();
-//		std::cout << "--------------4" << std::endl;
-//		std::cout << "TEST 2" << std::endl;
 		int iNumNeighbor = fillValidNeighbor(current, neighbor);
 		for (int i = 0; i < iNumNeighbor; i++)
 		{
@@ -103,23 +76,21 @@ void AStar::Compute()
 				exit(0); 
 			}
 		}
-		Puzzle * EltInOpenset;
 		for (int i = 0; i < iNumNeighbor; i++)
 		{
-//			std::cout << "TEST 3" << std::endl;
 			iAttemptScore = current->iGetgScore() + 1;
 			neighbor[i]->SetgScore(iAttemptScore);
 			neighbor[i]->SetPriority(iAttemptScore + LinearConflict(neighbor[i], goal));
+			neighbor[i]->SetCameFrom(current);
 			if (closedSet.find(neighbor[i]))
 			{
 				delete neighbor[i];
 				continue;
 			}
 			bool bBetterWay = true;
-			if ((EltInOpenset = openSet.PopOutOfQueue(neighbor[i], &bBetterWay)) != NULL)
+			if (openSet.PopOutOfQueue(neighbor[i], &bBetterWay))
 			{
 				openSet.push(neighbor[i]);
-				neighbor[i]->SetCameFrom(current);
 			}
 			else if (!bBetterWay)
 			{
@@ -127,21 +98,11 @@ void AStar::Compute()
 			}
 			else
 			{
-				if (neighbor[i]->iGetgScore() >= iAttemptScore)
-				{
-					neighbor[i]->SetCameFrom(current);;
-					openSet.push(neighbor[i]);
-					delete EltInOpenset;
-				}
-				else
-				{
-					delete neighbor[i];
-				}
+				openSet.push(neighbor[i]);
 			}
 		}
 		neighbor.clear();
 	}
-	while (true);
 }
 
 int AStar::fillValidNeighbor(Puzzle * current, std::vector<Puzzle *> & neighbor)

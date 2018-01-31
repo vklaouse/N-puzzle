@@ -54,8 +54,17 @@ void ClosedSetTree::FreeFullTree(size_t i, Node * current)
 {
 	if (i == iSize)
 	{
+		iSizeCloseSet--;
 		if (current->currentPuzzle)
+		{
 			delete current->currentPuzzle;
+			current->currentPuzzle = NULL;
+		}
+		else
+		{
+			std::cerr << "Smth wierd happened" << std::endl;
+			exit (0);
+		}
 		delete current;
 		return;
 	}
@@ -71,13 +80,24 @@ void ClosedSetTree::FreeFullTree(size_t i, Node * current)
 
 ClosedSetTree::~ClosedSetTree()
 {
+	if (iSizeCloseSet == 0)
+	{
+		return ;
+	}
 	FreeFullTree(0, beginTree);
 }
 
 void ClosedSetTree::FillTree(Puzzle * elt, size_t i, bool bExist, Node * current)
 {
 	if (i >= elt->vecGetPuzzle().size())
+	{
+		std::cout << "------------------------------1" << std::endl;
+		printTable(elt->vecGetPuzzle());
+		std::cout << "------------------------------2" << std::endl;
+		current->currentPuzzle = elt;
+		iSizeCloseSet--;
 		return ;
+	}
 	int iValue = elt->vecGetPuzzle()[i];
 
 	std::list<Node *>::const_iterator k = current->nextNode.begin();
@@ -110,8 +130,6 @@ void ClosedSetTree::FillTree(Puzzle * elt, size_t i, bool bExist, Node * current
 	else
 	{
 		current->nextNode.insert(k, tmp);
-		if (elt == NULL)
-			std::cout << "tet" << std::endl;
 		tmp->currentPuzzle = elt;
 	}
 }
@@ -181,6 +199,7 @@ bool ClosedSetTree::recPopBack(size_t i, Node * current)
 
 Puzzle * ClosedSetTree::pop_back(bool * bTest)
 {
+	iSizeCloseSet--;
 	tmpMemory = NULL;
 	*bTest = recPopBack(0, beginTree);
 	return tmpMemory;
@@ -190,20 +209,20 @@ bool ClosedSetTree::findEltToPop(Puzzle *elt, size_t i, Node * current, bool * b
 {
 	if (i == iSize)
 	{
-		if (*(current->currentPuzzle) == *elt)
+		if (elt->iGetPriority() < current->currentPuzzle->iGetPriority())
 		{
-			if (elt->iGetPriority() <= current->currentPuzzle->iGetPriority())
-			{
-				*bBetterWay = false;
-				return false;
-			}
 			*bBetterWay = true;
-			tmpMemory = current->currentPuzzle;
+			delete current->currentPuzzle;
 			delete current;
+			bMemDelete = true;
 			return true;
 		}
 		else
+		{
+			*bBetterWay = false;
+			bMemDelete = false;
 			return false;
+		}
 	}
 
 	int iValue = elt->vecGetPuzzle()[i];
@@ -239,11 +258,13 @@ bool ClosedSetTree::findEltToPop(Puzzle *elt, size_t i, Node * current, bool * b
 	return false;
 }
 
-Puzzle *ClosedSetTree::findToPop(Puzzle * elt, bool * bTest, bool * bBetterWay)
+bool ClosedSetTree::findToPop(Puzzle * elt, bool * bTest, bool * bBetterWay)
 {
 	bMemory = false;
-	tmpMemory = NULL;
+	bMemDelete = false;
 	findEltToPop(elt, 0, beginTree, bBetterWay);
+	if (bMemDelete)
+		iSizeCloseSet--;
 	*bTest = bMemory;
-	return tmpMemory;
+	return bMemDelete;
 }

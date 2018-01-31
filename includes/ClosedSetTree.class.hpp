@@ -29,6 +29,7 @@ private:
 	};
 
 	Puzzle * tmpMemory;
+	bool bMemDelete;
 	bool bMemory;
 	Node * beginTree;
 	size_t iSize;
@@ -49,7 +50,7 @@ public:
 	size_t size() const { return iSizeCloseSet; };
 	bool find(Puzzle *);
 	Puzzle * pop_back(bool *);
-	Puzzle * findToPop(Puzzle *, bool *, bool *);
+	bool findToPop(Puzzle *, bool *, bool *);
 
 	void PrintFullTree();
 

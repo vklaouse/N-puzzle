@@ -48,7 +48,7 @@ public:
     void push(Puzzle * elt);
 	Puzzle * pop_back();
     bool bIsInQueue(Puzzle * elt); //POP THE ELT OUT
-    Puzzle * PopOutOfQueue(Puzzle * elt, bool * bBetterWay); //POP THE ELT OUT
+    bool PopOutOfQueue(Puzzle * elt, bool * bBetterWay); //POP THE ELT OUT
 
     void PrintQueue();
 
