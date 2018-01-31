@@ -47,8 +47,8 @@ $(() => {
 				if (i < config.puzzleStates.length) {
 					$(`#puzzle`).remove();
 					$(`#cnt`).remove();
-					buildPuzzle(config, i);
 					configuration.currentState = i++;
+					buildPuzzle(config, i);
 					buildCnt(config);
 				}
 			}, 400);
